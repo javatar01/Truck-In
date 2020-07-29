@@ -53,7 +53,6 @@ public class SignInActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 assert user != null;
                 Log.d(TAG, "onActivityResult: " + user.toString());
-                //Checking for User (New/Old)
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("trackers");

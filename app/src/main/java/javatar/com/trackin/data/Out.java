@@ -1,8 +1,10 @@
 package javatar.com.trackin.data;
 
 public class Out {
-    private String id,token;
+    private String id,token,email;
     private boolean location_updates;
+
+    private Point lastLocation;
 
     public Out() {
     }
@@ -29,5 +31,21 @@ public class Out {
 
     public void setLocation_updates(boolean location_updates) {
         this.location_updates = location_updates;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Point getLastLocation() {
+        return lastLocation;
+    }
+
+    public void setLastLocation(Point lastLocation) {
+        this.lastLocation = lastLocation;
     }
 }

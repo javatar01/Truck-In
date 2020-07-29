@@ -41,16 +41,15 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         List<Out> outs = new ArrayList<>();
         outsAdapter.setList(outs);
 
-        // Write a message to the database
-        String myid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("trackers")
-                .child(myid).child("outs");
-
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait..");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
+
+        String myid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("trackers")
+                .child(myid).child("outs");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

@@ -1,11 +1,12 @@
 package javatar.com.trackin.activities;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Switch;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,14 +22,17 @@ import javatar.com.trackin.data.Data;
 import javatar.com.trackin.data.MyResponse;
 import javatar.com.trackin.data.NotificationSender;
 import javatar.com.trackin.data.Out;
+import javatar.com.trackin.data.Sender;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OutsAdapter extends RecyclerView.Adapter<OutsAdapter.OutsViewHolder> {
+
     private List<Out> listOuts = new ArrayList<>();
 
     private static final String TAG = "OutsAdapter";
+
     @NonNull
     @Override
     public OutsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,15 +42,28 @@ public class OutsAdapter extends RecyclerView.Adapter<OutsAdapter.OutsViewHolder
     @Override
     public void onBindViewHolder(@NonNull OutsViewHolder holder, int position) {
         Out itemOuts = listOuts.get(position);
-        holder.switch_updates.setChecked(itemOuts.isLocation_updates());
-        holder.title.setText(itemOuts.getId());
+        holder.title.setText(itemOuts.getEmail());
+        holder.last_location.setText(itemOuts.getLastLocation().getText());
+        holder.time.setText(itemOuts.getLastLocation().getTime());
 
-        holder.switch_cliecker.setOnClickListener(v -> {
-            if (itemOuts.isLocation_updates()){
-                sendNotifications(itemOuts.getToken(),"0");
-            }else {
-                sendNotifications(itemOuts.getToken(),"1");
-            }
+        holder.clicker.setOnClickListener(v -> {
+            MapsActivity.out = itemOuts;
+            v.getContext().startActivity(new Intent(v.getContext(),MapsActivity.class));
+        });
+
+        holder.refresh.setOnClickListener(v -> {
+            holder.refresh.setVisibility(View.INVISIBLE);
+            Sender.sendNotifications(itemOuts.getToken(), "ll", new Sender.NotifyCallback() {
+                @Override
+                public void onSuccess() {
+                    holder.refresh.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFailed() {
+                    holder.refresh.setVisibility(View.VISIBLE);
+                }
+            });
         });
     }
 
@@ -61,40 +78,19 @@ public class OutsAdapter extends RecyclerView.Adapter<OutsAdapter.OutsViewHolder
     }
 
     public static class OutsViewHolder extends RecyclerView.ViewHolder {
-        Switch switch_updates;
-        TextView title;
-        Button switch_cliecker;
+        TextView title,last_location,time;
+
+        ImageView refresh;
+
+        Button clicker;
+
         public OutsViewHolder(@NonNull View itemView) {
             super(itemView);
-            switch_updates = itemView.findViewById(R.id.switch_updates);
-            switch_cliecker = itemView.findViewById(R.id.switch_cliecker);
             title = itemView.findViewById(R.id.title);
+            last_location = itemView.findViewById(R.id.last_locotion);
+            time = itemView.findViewById(R.id.time);
+            refresh = itemView.findViewById(R.id.refresh);
+            clicker = itemView.findViewById(R.id.clicker);
         }
     }
-
-    public void sendNotifications(String userToken, String message) {
-        Log.d(TAG, userToken);
-        Data data = new Data("locationUpdates", message);
-        NotificationSender sender = new NotificationSender(data, userToken);
-        APIService apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
-        apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MyResponse> call, @NonNull Response<MyResponse> response) {
-                if (response.code() == 200) {
-                    assert response.body() != null;
-                    if (response.body().success != 1) {
-                        Log.d(TAG, "onResponse: failed");
-                    }else {
-                        Log.d(TAG, "onResponse: ss");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MyResponse> call,@NonNull Throwable t) {
-                Log.d(TAG, "onResponse: ee");
-            }
-        });
-    }
-
 }

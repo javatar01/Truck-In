@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="8dp"
+    android:background="@color/colorAccent"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
@@ -14,16 +16,25 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/button"
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@color/colorPrimary"
-        android:drawableTop="@drawable/qrcode"
-        android:onClick="openQr"
-        android:padding="8dp"
-        android:text="My Qr"
-        android:textColor="#fff" />
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="@color/colorPrimaryDark"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:drawableTop="@drawable/qrcode"
+            android:onClick="openQr"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="My Qr"
+            android:textColor="#fff" />
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>
