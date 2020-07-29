@@ -43,8 +43,10 @@ public class OutsAdapter extends RecyclerView.Adapter<OutsAdapter.OutsViewHolder
     public void onBindViewHolder(@NonNull OutsViewHolder holder, int position) {
         Out itemOuts = listOuts.get(position);
         holder.title.setText(itemOuts.getEmail());
-        holder.last_location.setText(itemOuts.getLastLocation().getText());
-        holder.time.setText(itemOuts.getLastLocation().getTime());
+        if (itemOuts.getLastLocation() != null){
+            holder.last_location.setText(itemOuts.getLastLocation().getText());
+            holder.time.setText(itemOuts.getLastLocation().getTime());
+        }
 
         holder.clicker.setOnClickListener(v -> {
             MapsActivity.out = itemOuts;
